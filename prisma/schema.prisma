@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum GenderType {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+enum StatusType {
+  APPROVE
+  PENDING
+  REJECT
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id        String     @unique @default(cuid())
+  fullName  String
+  email     String?    @unique
+  whatsApp  String     @unique
+  nik       String     @unique
+  gender    GenderType
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  status    StatusType @default(PENDING)
+  role      UserRole   @default(USER)
+
+  metadataId String?
+  metaData   MetadataUser? @relation(fields: [metadataId], references: [id])
+}
+
+model MetadataUser {
+  id                 String   @unique @default(cuid())
+  nisn               String   @unique
+  fromSmp            String /// asal sekolah
+  graduationYear     String /// tahun lulus sekolah smp
+  teacherWhatsApp    String /// nomor whatsapp guru BK
+  address            String /// alamat user
+  parrentName        String /// nama orang tua wali
+  parrentPhoneNumber String /// nomor telepon orang tua wali
+  parrentAddress     String /// alamat orang tua wali
+  certificatePicture String /// poto ijazah
+  placeOfBirth       String /// tempat lahir
+  birthday           DateTime /// tanggal lahir user
+  profilePicture     String /// poto profile
+  userId             String   @unique
+  User               User[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Post {
+  id        String   @unique @default(cuid())
+  thumbnail String
+  title     String
+  slug      String   @unique
+  content   String   @db.LongText
+  authorId  String /// id of user
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteConfig {
+  id        String   @unique @default(cuid())
+  siteName  String /// nama situs
+  bigTitle  String
+  slogan    String
+  siteAbout String   @db.LongText /// penjelasan profile sekolah
+  logo      String
+  favicon   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
