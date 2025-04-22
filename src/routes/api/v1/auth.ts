@@ -99,7 +99,10 @@ route.post('/register', async (req, res, next) => {
                 email: body.email
             }
         })
-        res.send(create)
+        res.send({
+            success: true,
+            message: 'Daftar berhasil'
+        })
     } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
             if (error.code == "P2002") {
