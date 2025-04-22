@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+
 import { ReqOptions } from "./authMiddleware";
 import { NextFunction, Request, Response } from "express";
 

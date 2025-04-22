@@ -88,3 +88,16 @@ model SiteConfig {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+enum ImageType {
+  BASE64
+  FILE
+}
+
+model Image {
+  id           String    @unique @default(uuid())
+  imageContent String    @db.LongText
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  type         ImageType
+}
