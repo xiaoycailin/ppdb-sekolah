@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "../../../database";
-import { levenshteinEditDistance } from 'levenshtein-edit-distance'
-
+import { distance } from 'fastest-levenshtein';
+// levenshteinEditDistance
 const route = Router()
 
 route.get('/', async (req, res, next) => {
@@ -21,6 +21,9 @@ route.get('/', async (req, res, next) => {
 
 route.get('/search', async (req, res, next) => {
     try {
+        // const imported = await import('levenshtein-edit-distance');
+
+        // const levenshteinEditDistance = imported.default as (a: string, b: string) => number;
         const rawQuery = (req.query.s as string).toLowerCase().trim()
         const queryWords = rawQuery.split(/\s+/)
         const queryNoSpace = rawQuery.replace(/\s+/g, '')
@@ -42,9 +45,11 @@ route.get('/search', async (req, res, next) => {
             // Cek kombinasi fuzzy match
             const isMatch = queryWords.some(queryWord =>
                 combinedWords.some(fieldWord =>
-                    levenshteinEditDistance(queryWord, fieldWord) <= 2 || fieldWord.includes(queryWord)
+
+                    distance(queryWord, fieldWord) <= 2 || fieldWord.includes(queryWord)
                 )
-            ) || combinedNoSpace.includes(queryNoSpace) || levenshteinEditDistance(queryNoSpace, combinedNoSpace) <= 2
+
+            ) || combinedNoSpace.includes(queryNoSpace) || distance(queryNoSpace, combinedNoSpace) <= 2
 
             return isMatch
         })
